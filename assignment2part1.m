@@ -71,6 +71,9 @@ ylabel("T")
 zlabel("sigma")
 title("Numerical solution")
 %axis([60 200 0.5 1.5 0.1 0.3]); 
+axis tight
+shading interp
+colorbar
  
 %% Numerical solution with implied volatilities
 for i=1:size(C,1)
@@ -151,6 +154,9 @@ ylabel("T")
 zlabel("sigma")
 title("Numerical solution with implied volatilities")
 axis([60 200 0.5 1.5 0.1 0.3]); 
+axis tight
+shading interp
+colorbar
 
  
 %% Analitical solution 
@@ -163,3 +169,6 @@ ylabel("T")
 zlabel("sigma")
 title("Analytical solution")
 axis([60 200 0.5 1.5 0.1 0.3]); 
+axis tight
+shading interp
+colorbar
