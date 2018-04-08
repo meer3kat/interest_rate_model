@@ -31,45 +31,48 @@ end
 figure(1) 
 [XnumInt,YnumInt]=meshgrid(Kint,Tint);
 surf(XnumInt,YnumInt,SigmaNumInt);
+zlim([0 0.35])
 xlabel("K")
 ylabel("T")
 zlabel("sigma")
 title("Numerical solution for interior points")
 %axis([60 200 0.5 1.5 0.1 0.3]);
-axis tight
+
+caxis([0.0 0.3])
 shading interp
 colorbar
+
 
 %% Numerical solution
 %NEED TO ADD SQRT WHEN CALCULATING SIGMANUM. IT IS NOT ADDED BECAUSE A
 %COUPLE OF POINTS ARE NEGATIVE, SO THE SQUARE ROOT GIVES AN ERROR. HOWEVER,
 %IT WORKS USING ONLY INTERIOR POINTS
-for i=1:size(C,1) 
-   for j=1:size(C,2) 
-       if i==1 && j==1 
-           dCdT(i,j) = (C(i+1,j)-C(i,j))/(T(i+1)-T(i)); 
-           dCdK(i,j) = (C(i,j+1)-C(i,j))/(K(j+1)-K(j)); 
-       elseif i==1 && j<size(C,2) && j>1 
-           dCdT(i,j) = (C(i+1,j)-C(i,j))/(T(i+1)-T(i)); 
+for i=1:size(C,1) %i for T
+   for j=1:size(C,2) %j for K
+       if i==1 && j==1 %left bottom cornor
+           dCdT(i,j) = (-C(i+2,j)+4*C(i+1,j)-3*C(i,j))/(2*(T(i+1)-T(i))); %taylor expansion fw with 2 order error
+           dCdK(i,j) = (-C(i,j+2)+4*C(i,j+1)-3*C(i,j))/(2*(K(j+1)-K(j))); 
+       elseif i==1 && j<size(C,2) && j>1 %bottom boundary
+           dCdT(i,j) = (-C(i+2,j)+4*C(i+1,j)-3*C(i,j))/(2*(T(i+1)-T(i))); 
            dCdK(i,j) = (C(i,j+1)-C(i,j-1))/(K(j+1)-K(j-1)); 
-       elseif i==1 && j==size(C,2) 
-           dCdT(i,j) = (C(i+1,j)-C(i,j))/(T(i+1)-T(i)); 
-           dCdK(i,j) = (C(i,j)-C(i,j-1))/(K(j)-K(j-1)); 
-       elseif i>1 && i<size(C,1) && j==1 
+       elseif i==1 && j==size(C,2) %right bottom cornor
+           dCdT(i,j) = (-C(i+2,j)+4*C(i+1,j)-3*C(i,j))/(2*(T(i+1)-T(i))); 
+           dCdK(i,j) = (3*C(i,j)-4*C(i,j-1)+C(i,j-2))/(2*(K(j)-K(j-1))); 
+       elseif i>1 && i<size(C,1) && j==1 %left side boundary
            dCdT(i,j) = (C(i+1,j)-C(i-1,j))/(T(i+1)-T(i-1)); 
-           dCdK(i,j) = (C(i,j+1)-C(i,j))/(K(j+1)-K(j)); 
-       elseif i>1 && i<size(C,1) && j==size(C,2) 
+           dCdK(i,j) = (-C(i,j+2)+4*C(i,j+1)-3*C(i,j))/(2*(K(j+1)-K(j))); 
+       elseif i>1 && i<size(C,1) && j==size(C,2) %right side boundary
            dCdT(i,j) = (C(i+1,j)-C(i-1,j))/(T(i+1)-T(i-1)); 
-           dCdK(i,j) = (C(i,j)-C(i,j-1))/(K(j)-K(j-1)); 
-       elseif i==size(C,1) && j==1 
-           dCdT(i,j) = (C(i,j)-C(i-1,j))/(T(i)-T(i-1)); 
-           dCdK(i,j) = (C(i,j+1)-C(i,j))/(K(j+1)-K(j)); 
-       elseif i==size(C,1) && j>1 && j<size(C,2) 
-           dCdT(i,j) = (C(i,j)-C(i-1,j))/(T(i)-T(i-1)); 
+           dCdK(i,j) = (3*C(i,j)-4*C(i,j-1)+C(i,j-2))/(2*(K(j)-K(j-1))); 
+       elseif i==size(C,1) && j==1 %left up cornor
+           dCdT(i,j) = (3*C(i,j)-4*C(i-1,j)+C(i-2,j))/(2*(T(i)-T(i-1))); 
+           dCdK(i,j) = (-C(i,j+2)+4*C(i,j+1)-3*C(i,j))/(2*(K(j+1)-K(j))); 
+       elseif i==size(C,1) && j>1 && j<size(C,2) %upper boundary
+           dCdT(i,j) = (3*C(i,j)-4*C(i-1,j)+C(i-2,j))/(2*(T(i)-T(i-1))); 
            dCdK(i,j) = (C(i,j+1)-C(i,j-1))/(K(j+1)-K(j-1)); 
-       elseif i==size(C,1) && j==size(C,2) 
-           dCdT(i,j) = (C(i,j)-C(i-1,j))/(T(i)-T(i-1)); 
-           dCdK(i,j) = (C(i,j)-C(i,j-1))/(K(j)-K(j-1)); 
+       elseif i==size(C,1) && j==size(C,2) %right up cornor
+           dCdT(i,j) = (3*C(i,j)-4*C(i-1,j)+C(i-2,j))/(2*(T(i)-T(i-1))); 
+           dCdK(i,j) = (3*C(i,j)-4*C(i,j-1)+C(i,j-2))/(2*(K(j)-K(j-1))); 
        else 
            dCdT(i,j) = (C(i+1,j)-C(i-1,j))/(T(i+1)-T(i-1)); 
            dCdK(i,j) = (C(i,j+1)-C(i,j-1))/(K(j+1)-K(j-1)); 
@@ -98,13 +101,16 @@ end
  
 figure(2) 
 [Xnum1,Ynum1]=meshgrid(K,T);
-surf(Xnum1,Ynum1,SigmaNum);
+surf(Xnum1,Ynum1,SigmaNum)
+zlim([0 0.35])
 xlabel("K")
 ylabel("T")
 zlabel("sigma")
 title("Numerical solution")
-%axis([60 200 0.5 1.5 0.1 0.3]);
-axis tight
+
+%axis([60 200 0.5 1.5 0.15 0.25]);
+
+caxis([0.0 0.3]);
 shading interp
 colorbar
 
@@ -183,12 +189,14 @@ end
 figure(3) 
 [Xnum2,Ynum2]=meshgrid(K,T); 
 surf(Xnum2,Ynum2,SigmaNumImp);
+zlim([0 0.35])
 xlabel("K")
 ylabel("T")
 zlabel("sigma")
 title("Numerical solution with implied volatilities")
-axis([60 200 0.5 1.5 0.1 0.3]);
-axis tight
+%axis([60 200 0.5 1.5 0.1 0.3]);
+%axis tight
+caxis([0.00 0.3])
 shading interp
 colorbar
  
@@ -197,11 +205,12 @@ figure(4)
 [X,Y]=meshgrid(K,T); 
 SigmaAnalyt = 0.15+0.15*(0.5+2.*Y).*((X./100-1.2).^2)./(((X.^2)./(100.^2))+1.44); 
 surf(X,Y,SigmaAnalyt);
+zlim([0 0.35])
 xlabel("K")
 ylabel("T")
 zlabel("sigma")
 title("Analytical solution")
-axis([60 200 0.5 1.5 0.1 0.3]);
-axis tight
+%axis([60 200 0.5 1.5 0.1 0.3]);
+caxis([0.00 0.3])
 shading interp
 colorbar
