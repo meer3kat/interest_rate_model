@@ -47,13 +47,3 @@ end
 
 y_out = sum(Ldiff2) + sum(Sdiff2);
 end
-
-      
-
-
-
-
-
-
-
-

@@ -1,9 +1,19 @@
+%% Assignment 2 part 2 Calibration of a intereste rate model from STIBOR and swap rates
+%
+%
+% In this part, we will calibrate the simply_compounded interest rates and swap 
+% rates using the Vasicek model.
+%% 1 calibrate paremeter 
+% In this part, we calibrae the parameters $\theta$ = {k, $\phi$, 
+% $\sigma$,r0}.by calling fminsearch and fminunc.
+
 clear all;
+
 
 x0 = [0.9572 0.4854 0.8003 0.1419];
 %x0 = [1 1 1 1];
 T1 = [1 7 30 60 90 180]; %in days
-T1 = T1/360;
+T1 = T1/360; % in years
 Lmarket = [0.0300 0.0302 0.0307 0.0314 0.0320 0.0335];
 
 T2 = [1 2 3 4 5 6 7 8 9 10];%in years swap maturities time
@@ -93,4 +103,8 @@ title('yield curve for the swap rates');
 hold off
 
 %saveas(my_fig,'yield_plot2.png');
+
+
+dbtype('cirmodel.m');
+
 
