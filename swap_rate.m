@@ -102,8 +102,21 @@ legend('swap rate(fminsearch)','swap rate(fminunc)','market data')
 title('yield curve for the swap rates');
 hold off
 
+
+
 %saveas(my_fig,'yield_plot2.png');
 
+
+%% comment
+% the different x0 will give different results when call fminsearch and
+% fminunc. But when calculate back the simply-compouded interest rate and
+% swap rates, they give the same result. This might be that the fminsearch
+% and fminunc found local minimizer and the value are both close to 0.
+% the convergency rate are fast, but fminsearch use Nelder_Mead simplex
+% method that does not require the minimizing problem to be differentiable.
+% the error function can be discontinuous. while the fminunc use the calssic newton method assuming that it is
+% differentiable. fminsearch tend to give a more robust result while
+% fminunc might get stucked at local minimum.
 
 dbtype('cirmodel.m');
 
